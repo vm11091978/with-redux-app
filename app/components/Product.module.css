@@ -1,7 +1,11 @@
-.search {
+.search, .input, .inputCount {
   width: 300px;
   height: 30px;
   font-size: 14px;
+}
+
+.inputCount {
+  width: 100px;
 }
 
 .modal {
@@ -30,6 +34,7 @@
   text-align: left;
   background: white;
   overflow: hidden;
+  padding: 1rem 2rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.15);
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
@@ -41,7 +46,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
 }
 
 .modalClose {
@@ -67,6 +71,37 @@
   to {
     transform: translateY(0);
   }
+}
+
+.form > div {
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.select, .delivery > div > div {
+  width: 150px;
+  padding-left: 5px;
+}
+
+.delivery {
+  display: flex;
+  flex-direction: row;
+}
+
+.select {
+  height: 30px;
+  font-size: 16px;
+  background-color: white;
+  outline: none;
+  border: 1px solid gray;
+  cursor: pointer;
+}
+
+.delivery > div {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid gray;
+  margin-left: 20px;
 }
 
 
