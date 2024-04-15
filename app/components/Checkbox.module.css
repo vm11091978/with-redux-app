@@ -1,0 +1,8 @@
+.checkbox, .checkboxAll {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.checkboxAll {
+  border-bottom: 1px solid gray;
+}

@@ -1,0 +1,40 @@
+.form > div {
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.input, .inputCount {
+  width: 300px;
+  height: 30px;
+  font-size: 14px;
+}
+
+.inputCount {
+  width: 100px;
+}
+
+.delivery {
+  display: flex;
+  flex-direction: row;
+}
+
+.select, .delivery > div > div {
+  width: 150px;
+  padding-left: 5px;
+}
+
+.select {
+  height: 30px;
+  font-size: 16px;
+  background-color: white;
+  outline: none;
+  border: 1px solid gray;
+  cursor: pointer;
+}
+
+.delivery > div {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid gray;
+  margin-left: 20px;
+}

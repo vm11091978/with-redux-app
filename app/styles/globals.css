@@ -14,3 +14,55 @@ a {
 * {
   box-sizing: border-box;
 }
+
+button {
+  height: 30px;
+  background: none;
+  font-size: 16px;
+  border: 1px solid gray;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0 15px;
+  transition: all 0.2s;
+}
+
+button:hover, button:focus {
+  background: lightgray;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th,
+td {
+  border: 1px solid gray;
+  padding: 15px 25px;
+  margin: 0;
+}
+
+th {
+  min-width: 150px;
+  background-color: rgba(112, 76, 182, 0.1);
+  text-align: center;
+  position: relative;
+  transition: all 0.2s;
+}
+
+th:first-child:hover,
+th:nth-child(2):hover {
+  background: #ddd;
+  cursor: pointer;
+}
+
+td:first-child {
+  border-right: none;
+  padding-right: 50px;
+}
+
+td:nth-child(2) {
+  border-left: none;
+  text-align: right;
+}

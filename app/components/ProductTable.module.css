@@ -1,0 +1,26 @@
+.sort {
+  display: flex;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.count {
+  background-color: lightgray;
+  border-radius: 33%;
+  padding: 5px 10px;
+}
+
+.link, .linkLeft {
+  color: blue;
+  text-decoration: underline;
+}
+
+.linkLeft {
+  margin-right: 25px;
+}
