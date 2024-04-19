@@ -13,12 +13,12 @@ export default function SearchBar() {
   const [filterText, setFilterText] = useState("")
   
   useEffect(() => {
-    // здесь сравнение обязательно должно быть нестрогим
+    // Здесь сравнение обязательно должно быть нестрогим
     if (getParams == "") {
       setFilterText("")
       dispatch(filterTextSearch(""))
     } else {
-      // переберём все get-параметры: если найдётся параметр, хранящий текст поиска,
+      // Переберём все get-параметры: если найдётся параметр, хранящий текст поиска,
       // запишем этот текст и в состояние компонента и в глобальное состояние
       for (const param of getParams) {
         if (param[0] === "filter" && param[1] !== "") {
@@ -26,7 +26,7 @@ export default function SearchBar() {
           dispatch(filterTextSearch(param[1]))
           break
         }
-        // если get-параметр с текстом поиска отсутствует (т.е. не нужно фильтровать товары),
+        // Если get-параметр с текстом поиска отсутствует (т.е. не нужно фильтровать товары),
         // запишем пустую строку и в состояние компонента и в глобальное состояние
         else {
           setFilterText("")

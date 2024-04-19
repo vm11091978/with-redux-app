@@ -2,7 +2,7 @@
 
 import { COUNTRIES } from "@/lib/data.js"
 
-export default function Radio({ radioValue, setRadioValue, setCheckboxValues }) {
+export default function Radio({ radioValue, setRadioValue, setCheckboxValues, onBlur }) {
   const rows = []
   let i = 1
   COUNTRIES.forEach((country) => {
@@ -14,6 +14,7 @@ export default function Radio({ radioValue, setRadioValue, setCheckboxValues }) 
           value={i}
           checked={radioValue == `${i}` ? true : false}
           onChange={(e) => {setRadioValue(e.target.value); setCheckboxValues(undefined);}}
+          onBlur={() => onBlur()}
         />
         {Object.keys(country)}
       </div>

@@ -4,25 +4,22 @@ import chengeCheckbox from "@/lib/features/chengeCheckbox"
 import { COUNTRIES } from "@/lib/data.js"
 import styles from "./Checkbox.module.css"
 
-export default function Checkbox({ radioValue, checkboxValues, setCheckboxValues }) {
+export default function Checkbox({ radioValue, checkboxValues, setCheckboxValues, setIsErrorMessageSelectCity, onBlur }) {
   if (radioValue) {
     let checkboxValuesCopy = checkboxValues
     let checkAll = true
 
-    // получим список городов для выбранной страны (её порядковый номер передаётся в radioValue)
+    // Получим список городов для выбранной страны (её порядковый номер передаётся в radioValue)
     const cities = Object.values(COUNTRIES[radioValue-1])[0]
 
-    // если в состоянии компонента не хранятся никакие данные о выбранных городах
+    // Если в состоянии компонента не хранятся никакие данные о выбранных городах
     if (checkboxValues === undefined) {
       checkboxValuesCopy = new Array(cities.length).fill(false)
       checkAll = false
     } else {
-    // иначе узнаем, есть ли в массиве хотя бы один false - если да, то чекбокс "Select All" должен быть без галочки
-      for (const check of checkboxValuesCopy) {
-        if (check === false) {
-          checkAll = false
-          break
-        }
+    // Иначе узнаем, есть ли в массиве хотя бы один false - если да, то чекбокс "Select All" должен быть без галочки
+      if (checkboxValuesCopy.includes(false)) {
+        checkAll = false
       }
     }
 
@@ -33,7 +30,11 @@ export default function Checkbox({ radioValue, checkboxValues, setCheckboxValues
           type="checkbox"
           value="all"
           checked={checkAll}
-          onChange={(e) => setCheckboxValues(chengeCheckbox(e.target.value, checkboxValuesCopy))}
+          onChange={(e) => {
+              setCheckboxValues(chengeCheckbox(e.target.value, checkboxValuesCopy))
+              setIsErrorMessageSelectCity(false)
+            }}
+          onBlur={() => onBlur()}
         />
         Select All
       </div>
@@ -48,7 +49,11 @@ export default function Checkbox({ radioValue, checkboxValues, setCheckboxValues
             type="checkbox"
             value={i+1}
             checked={checkboxValuesCopy[`${i}`]}
-            onChange={(e) => setCheckboxValues(chengeCheckbox(e.target.value, checkboxValuesCopy))}
+            onChange={(e) => {
+                setCheckboxValues(chengeCheckbox(e.target.value, checkboxValuesCopy))
+                setIsErrorMessageSelectCity(false)
+              }}
+            onBlur={() => onBlur()}
           />
           {city}
         </div>
