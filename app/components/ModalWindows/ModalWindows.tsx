@@ -6,7 +6,7 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { useAppDispatch } from "@/lib/hooks"
 import { deleteProduct } from "@/lib/features/productSlice"
-import ModalForm from "./ModalForm"
+import ModalForm from "../ModalForm/ModalForm"
 import styles from "./ModalWindows.module.css"
 
 export default function ModalWindows() {

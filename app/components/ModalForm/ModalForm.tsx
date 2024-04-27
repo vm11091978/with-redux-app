@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { COUNTRIES } from "@/lib/data.js"
 import { schema } from "@/lib/schema.js"
@@ -10,8 +10,10 @@ import {
   changeProduct,
   addProduct
 } from "@/lib/features/productSlice"
-import Radio from "./Radio"
-import Checkbox from "./Checkbox"
+import Radio from "../Radio"
+import Checkbox from "../Checkbox/Checkbox"
+import InputElement from "../InputElement/InputElement"
+import FormLabel from "../FormLabel"
 import styles from "./ModalForm.module.css"
 
 export default function ModalForm({ modalNumOpen }) {
@@ -116,6 +118,26 @@ export default function ModalForm({ modalNumOpen }) {
   const validate = ajv.compile(schema)
   const valid = ajv.validate(schema, data)
 
+  const onBlur = useCallback(() => {
+    const errorsNew = {}
+    if (valid) {
+      console.log("valid")
+    } else {
+      console.log("invalid")
+      validate.errors.map((error) => {
+        const fieldName = error.instancePath.substring(1)
+        errorsNew[fieldName] = error.message
+      })
+    }
+    setErrors(errorsNew)
+    setIsFocus("")
+  }, [validate.errors])
+
+  const onBlurPrice = () => {
+    setPriceTextFocus('$' + Number(priceText).toLocaleString())
+    onBlur
+  }
+
   let radio = ""
   if (!radioValue) {
     radio = <span>&nbsp;&bull; Нет доставки для данного товара</span>
@@ -182,121 +204,95 @@ export default function ModalForm({ modalNumOpen }) {
       'deliveryCity': checkboxValues,
     }))
   }
-
-  function onBlur() {
-    const errorsNew = {}
-    if (valid) {
-      console.log("valid")
-    } else {
-      console.log("invalid")
-      validate.errors.map((error) => {
-        const fieldName = error.instancePath.substring(1);
-        errorsNew[fieldName] = error.message
-      })
+  
+  const onChangeName = (e) => {setNameText(e.target.value)}
+  const onChangeEmail = (e) => {setEmailText(e.target.value)}
+  const onChangeCount = (e) => {
+  // Если в инпуте с типом "number" окажется нечисловое значение, он преобразует его в пустую строку
+    if (e.target.value !== '' && e.target.value >= 0 ) {
+      setCountText(e.target.value)
     }
-    setErrors(errorsNew)
-    setIsFocus("")
   }
-
-  return (
-    <form className={styles.form} onSubmit={(e) => {e.preventDefault()}}>
-      <label htmlFor="name">
-        Name:
-      </label>
-      <div>
-        <input
-          id="name"
-          className={errors.name ? styles.inputError : styles.input}
-          type="text"
-          value={nameText}
-          placeholder="имя"
-          onChange={(e) => setNameText(e.target.value)}
-          onFocus={(e) => setIsFocus(e.target.id)}
-          onBlur={() => onBlur()}
-        />{isFocus === "name" ? "" : errors.name}
-      </div>
-
-      <label htmlFor="email">
-        Supplier email:
-      </label>
-      <div>
-        <input
-          id="email"
-          className={errors.email ? styles.inputError : styles.input}
-          // type="email"
-          type="text"
-          value={emailText}
-          placeholder="email"
-          onChange={(e) => setEmailText(e.target.value)}
-          onFocus={(e) => setIsFocus(e.target.id)}
-          onBlur={() => onBlur()}
-        />{isFocus === "email" ? "" : errors.email}
-      </div>
-
-      <label htmlFor="count">
-        Count:
-      </label>
-      <div>
-        <input
-          id="count"
-          className={errors.count ? styles.inputCountError : styles.inputCount}
-          type="number"
-          value={countText}
-          placeholder="count"
-          onChange={(e) => {
-          // Если в инпуте с типом "number" окажется нечисловое значение, он преобразует его в пустую строку
-              if (e.target.value !== '' && e.target.value >= 0 ) {
-                setCountText(e.target.value)
-              }
-            }}
-          onFocus={(e) => setIsFocus(e.target.id)}
-          onBlur={() => onBlur()}
-        />{isFocus === "count" ? "" : errors.count}
-      </div>
-
-      <label htmlFor="price">
-        Price:
-      </label>
-      <div>
-        <input
-          id="price"
-          className={errors.price ? styles.inputError : styles.input}
-          type="text"
-          value={priceTextFocus}
-          placeholder="price"
-          onChange={(e) => {
-              setPriceText(e.target.value);
-              setPriceTextFocus(e.target.value);
-            }}
-          // onFocus={_ => setPriceTextFocus(priceText)}
-          onFocus={(e) => {
-              setPriceTextFocus(priceText)
-              setIsFocus(e.target.id)
-            }}
-          onBlur={() => {
-              setPriceTextFocus('$' + Number(priceText).toLocaleString());
-              onBlur();
-            }}
-        />{isFocus === "price" ? "" : errors.price}
-      </div>
-
-      <label htmlFor="delivery">
-        Delivery:
-      </label>
-      <div className={styles.delivery}>
-        <select
-          id="delivery"
-          className={isErrorMessageSelectCity ? styles.selectError : styles.select}
-          value={location}
-          onChange={(e) => {
-            setLocation(e.target.value);
+  const onChangePrice = (e) => {
+    setPriceText(e.target.value)
+    setPriceTextFocus(e.target.value)
+  }
+  const onChangeDelivery = (e) => {
+            setLocation(e.target.value)
             if (!e.target.value) {
               setRadioValue(0)
               setCheckboxValues(undefined)
               setIsErrorMessageSelectCity(false)
             }
-          }}
-          onBlur={() => onBlur()}
+  }
+
+  const onFocus = useCallback((e) => {
+    setIsFocus(e.target.id)
+  }, [])
+
+  const onFocusPrice = (e) => {
+    setPriceTextFocus(priceText)
+    setIsFocus(e.target.id)
+  }
+
+  function FormElement(props) {
+    return (
+      <>
+        <FormLabel props={ props } />
+        <InputElement props={ props }
+          onfocus={ onFocus }
+          onblur={ onBlur }
+          isfocus={ isFocus }
+        />
+      </>
+    )
+  }
+
+  return (
+    <form className={styles.form} onSubmit={(e) => {e.preventDefault()}}>
+      <FormElement 
+        name="Name"
+        id="name"
+        value={ nameText}
+        onchange={ onChangeName }
+        error={ errors.name }
+      />
+
+      <FormElement 
+        name="Supplier email"
+        id="email"
+        value={ emailText }
+        onchange={ onChangeEmail }
+        error={ errors.email }
+      />
+
+      <FormElement 
+        name="Count"
+        id="count"
+        type="number"
+        value={ countText }
+        onchange={ onChangeCount }
+        error={ errors.count }
+      />
+
+      <FormElement 
+        name="Price"
+        id="price"
+        value={ priceTextFocus }
+        onchange={ onChangePrice }
+        error={ errors.price }
+        onfocus={ onFocusPrice }
+        onblur={ onBlurPrice }
+      />
+
+      <FormLabel props={ {id: "delivery", name: "Delivery"} } />
+      <div className={styles.delivery}>
+        <select
+          id="delivery"
+          className={isErrorMessageSelectCity ? styles.selectError : styles.select}
+          value={ location }
+          onChange={ onChangeDelivery }
+          onBlur={ onBlur }
         >
           <option key={"no"} value={""}>
           </option>

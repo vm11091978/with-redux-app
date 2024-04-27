@@ -1,0 +1,21 @@
+.input, .inputError, .inputCount, .inputCountError {
+  width: 300px;
+  height: 30px;
+  font-size: 14px;
+  padding-left: 5px;
+  border: none;
+  outline: grey solid 1px;
+  border-radius: 2px;
+}
+
+.inputCount, .inputCountError {
+  width: 100px;
+}
+
+.inputError, .inputCountError {
+  outline: 2px solid red;
+}
+
+.input:focus, .inputError:focus, .inputCount:focus, .inputCountError:focus {
+  outline: black solid 2px;
+}
