@@ -1,23 +1,30 @@
+import { useAppDispatch, useAppSelector } from "@/lib/hooks"
+import {
+  setIsFocus,
+  setPriceTextFocus
+} from "@/lib/features/productSlice"
 import styles from "./InputElement.module.css"
 
 export default function InputElement(propsParent) {
-  const props = propsParent.props
+  const props = propsParent.children
 
+  const isFocus = useAppSelector((state) => state.product.isFocus)
+  const priceText = useAppSelector((state) => state.product.priceText)
+  const priceTextFocus = useAppSelector((state) => state.product.priceTextFocus)
+  const dispatch = useAppDispatch()
+  
   let typeInput = "text"
   if (props.type) {
     typeInput = props.type
   }
 
-  let onFocus = propsParent.onfocus
-  if (props.onfocus) {
-    onFocus = props.onfocus
+  const onFocus = (e) => {
+    dispatch(setIsFocus(e.target.id))
+    if (props.id === "price") {
+      dispatch(setPriceTextFocus(priceText))
+    }
   }
-
-  let onBlur = propsParent.onblur
-  if (props.onblur) {
-    onBlur = props.onblur
-  }
-
+    
   return (
     <div>
       <input
@@ -28,9 +35,9 @@ export default function InputElement(propsParent) {
         placeholder={ props.id }
         onChange={ props.onchange }
         onFocus={ onFocus }
-        onBlur={ onBlur }
+        onBlur={ props.onblur }
       />
-      {propsParent.isfocus === props.id ? "" : props.error}
+      {isFocus === props.id ? "" : props.error}
     </div>
   )
 }

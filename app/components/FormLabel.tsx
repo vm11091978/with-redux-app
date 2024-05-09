@@ -1,5 +1,4 @@
-export default function FormLabel(propsParent) {
-  const props = propsParent.props
+export default function FormLabel(props) {
   return (
     <label htmlFor={ props.id }>
       { props.name }:

@@ -8,12 +8,15 @@ import {
   valueRadio,
   valueCheckbox,
   changeProduct,
-  addProduct
+  addProduct,
+  setIsFocus,
+  setPriceText,
+  setPriceTextFocus
 } from "@/lib/features/productSlice"
+import FormElement from "../FormElement"
+import FormLabel from "../FormLabel"
 import Radio from "../Radio"
 import Checkbox from "../Checkbox/Checkbox"
-import InputElement from "../InputElement/InputElement"
-import FormLabel from "../FormLabel"
 import styles from "./ModalForm.module.css"
 
 export default function ModalForm({ modalNumOpen }) {
@@ -22,19 +25,18 @@ export default function ModalForm({ modalNumOpen }) {
   }
 
   const DATAPRODUCTS = useAppSelector((state) => state.product.dataProducts)
+  const isFocus = useAppSelector((state) => state.product.isFocus)
+  const priceText = useAppSelector((state) => state.product.priceText)
+  const priceTextFocus = useAppSelector((state) => state.product.priceTextFocus)
   const dispatch = useAppDispatch()
 
   const [nameText, setNameText] = useState("")
   const [emailText, setEmailText] = useState("")
   const [countText, setCountText] = useState(0)
-  const [priceText, setPriceText] = useState(0)
-  const [priceTextFocus, setPriceTextFocus] = useState(0)
   const [location, setLocation] = useState("")
   const [radioValue, setRadioValue] = useState(0)
   const [checkboxValues, setCheckboxValues] = useState()
-
   const [errors, setErrors] = useState({})
-  const [isFocus, setIsFocus] = useState("")
   const [isErrorMessageSelectCity, setIsErrorMessageSelectCity] = useState(false)
   const [isErrorMessageAlert, setIsErrorMessageAlert] = useState(false)
 
@@ -55,7 +57,7 @@ export default function ModalForm({ modalNumOpen }) {
     if (typeof numProduct === "undefined") {
       return <span>Ошибка! Товара с таким id не существует!</span>
     }
-    
+
     // Если выполнение кода дошло до этого места, значит при текущем рендеринге будет показана форма редактирования товара
     // чтобы увидеть работу кода, сделаем небольшую задержку между открытием формы и заполнением её полей тестовыми данными
     useEffect(() => {
@@ -64,14 +66,14 @@ export default function ModalForm({ modalNumOpen }) {
         setNameText(product.name)
         setEmailText(product.email)
         setCountText(product.count)
-        setPriceText(product.price)
-        setPriceTextFocus('$' + product.price.toLocaleString())
+        dispatch(setPriceText(product.price))
+        dispatch(setPriceTextFocus('$' + product.price.toLocaleString()))
         setRadioValue(product.delivery)
         setCheckboxValues(product.deliveryCity)
       }, 1000);
     }, [modalNumOpen])
   }
-  
+
   /*
   https://github.com/ajv-validator/ajv/blob/master/docs/json-schema.md
   https://github.com/ajv-validator/ajv-formats
@@ -110,7 +112,7 @@ export default function ModalForm({ modalNumOpen }) {
   const data = {
     name: nameText.trim(),
     email: emailTextTrim,
-    count: Number(countText), // count: countText2,
+    count: Number(countText),
     price: Number(priceText),
     fieldCheck: fieldCheck
   }
@@ -130,11 +132,11 @@ export default function ModalForm({ modalNumOpen }) {
       })
     }
     setErrors(errorsNew)
-    setIsFocus("")
+    dispatch(setIsFocus(""))
   }, [validate.errors])
 
   const onBlurPrice = () => {
-    setPriceTextFocus('$' + Number(priceText).toLocaleString())
+    dispatch(setPriceTextFocus('$' + Number(priceText).toLocaleString()))
     onBlur
   }
 
@@ -181,7 +183,7 @@ export default function ModalForm({ modalNumOpen }) {
   >
     Add / Update
   </button>
-  
+
   function clickAddProduct() {
     dispatch(addProduct({
       'name': String(nameText),
@@ -204,7 +206,7 @@ export default function ModalForm({ modalNumOpen }) {
       'deliveryCity': checkboxValues,
     }))
   }
-  
+
   const onChangeName = (e) => {setNameText(e.target.value)}
   const onChangeEmail = (e) => {setEmailText(e.target.value)}
   const onChangeCount = (e) => {
@@ -214,78 +216,61 @@ export default function ModalForm({ modalNumOpen }) {
     }
   }
   const onChangePrice = (e) => {
-    setPriceText(e.target.value)
-    setPriceTextFocus(e.target.value)
+    dispatch(setPriceText(e.target.value))
+    dispatch(setPriceTextFocus(e.target.value))
   }
   const onChangeDelivery = (e) => {
-            setLocation(e.target.value)
-            if (!e.target.value) {
-              setRadioValue(0)
-              setCheckboxValues(undefined)
-              setIsErrorMessageSelectCity(false)
-            }
-  }
-
-  const onFocus = useCallback((e) => {
-    setIsFocus(e.target.id)
-  }, [])
-
-  const onFocusPrice = (e) => {
-    setPriceTextFocus(priceText)
-    setIsFocus(e.target.id)
-  }
-
-  function FormElement(props) {
-    return (
-      <>
-        <FormLabel props={ props } />
-        <InputElement props={ props }
-          onfocus={ onFocus }
-          onblur={ onBlur }
-          isfocus={ isFocus }
-        />
-      </>
-    )
+    setLocation(e.target.value)
+    if (!e.target.value) {
+      setRadioValue(0)
+      setCheckboxValues(undefined)
+      setIsErrorMessageSelectCity(false)
+    }
   }
 
   return (
     <form className={styles.form} onSubmit={(e) => {e.preventDefault()}}>
-      <FormElement 
+      <FormElement
         name="Name"
         id="name"
-        value={ nameText}
-        onchange={ onChangeName }
+        value={ nameText }
         error={ errors.name }
+        onchange={ onChangeName }
+        onblur={ onBlur }
       />
 
-      <FormElement 
+      <FormElement
         name="Supplier email"
         id="email"
         value={ emailText }
-        onchange={ onChangeEmail }
         error={ errors.email }
+        onchange={ onChangeEmail }
+        onblur={ onBlur }
       />
 
-      <FormElement 
+      <FormElement
         name="Count"
         id="count"
         type="number"
         value={ countText }
-        onchange={ onChangeCount }
         error={ errors.count }
+        onchange={ onChangeCount }
+        onblur={ onBlur }
       />
 
-      <FormElement 
+      <FormElement
         name="Price"
         id="price"
         value={ priceTextFocus }
-        onchange={ onChangePrice }
         error={ errors.price }
-        onfocus={ onFocusPrice }
+        onchange={ onChangePrice }
         onblur={ onBlurPrice }
       />
 
-      <FormLabel props={ {id: "delivery", name: "Delivery"} } />
+      <FormLabel
+        name="Delivery"
+        id="delivery"
+      />
       <div className={styles.delivery}>
         <select
           id="delivery"
@@ -312,4 +297,4 @@ export default function ModalForm({ modalNumOpen }) {
       { button }
     </form>
   )
-} 
+}

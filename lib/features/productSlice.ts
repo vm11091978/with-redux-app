@@ -10,11 +10,9 @@ export interface AppState {
   valueRadio: number;
   valueCheckbox: array;
   dataProducts: array;
-}
-
-interface Item {
-  id: string
-  text: string
+  isFocus: string;
+  priceText: number;
+  priceTextFocus: number;
 }
 
 const initialState: AppState = {
@@ -24,6 +22,9 @@ const initialState: AppState = {
   valueRadio: 0,
   valueCheckbox: [],
   dataProducts: PRODUCTS,
+  isFocus: "",
+  priceText: 0,
+  priceTextFocus: 0,
 }
 
 export const appSlice = createSlice({
@@ -86,6 +87,15 @@ export const appSlice = createSlice({
       const index = state.dataProducts.findIndex((p) => p.id === action.payload);
       state.dataProducts.splice(index, 1);
     },
+    setIsFocus: (state, action: PayloadAction<string>) => {
+      state.isFocus = action.payload
+    },
+    setPriceText: (state, action: PayloadAction<string>) => {
+      state.priceText = action.payload
+    },
+    setPriceTextFocus: (state, action: PayloadAction<string>) => {
+      state.priceTextFocus = action.payload
+    },
   },
 })
 
@@ -98,7 +108,10 @@ export const {
   valueCheckbox,
   changeProduct,
   addProduct,
-  deleteProduct
+  deleteProduct,
+  setIsFocus,
+  setPriceText,
+  setPriceTextFocus,
 } = appSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
